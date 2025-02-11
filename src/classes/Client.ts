@@ -50,6 +50,7 @@ export class Client extends DjsClient {
 
     public async registerEvents(): Promise<this> {
         for (const eventPath of (await glob(process.env.EVENTS_PATH, { platform: 'linux' })).toString().replaceAll('dist', '..').split(',')) {
+            this.log(`Registering event ${eventPath.replace('../events/', '')}`);
             try {
                 const event: Event = (await import(eventPath)).default;
                 if (event.once) this.once(event.event, (...args) => event.fn(...args));
@@ -64,8 +65,10 @@ export class Client extends DjsClient {
     public async registerCommands(servers: Array<string>): Promise<this> {
         const commands: Array<Command['applicationData']> = [];
         for (const cmdPath of (await glob(process.env.COMMANDS_PATH, { platform: 'linux' })).toString().replaceAll('dist', '..').split(',')) {
+            this.log(`Registering command ${cmdPath.replace('../commands/', '')}`);
             try {
                 const command: Command = (await import(cmdPath)).default as Command;
+                if (!command?.name) continue;
                 this.cooldowns.set(command.name, new Collection());
                 if (command.prefixCommand) this.prefixCommands.set(command.name, command);
                 if (command.aliases && command.prefixCommand) for (const alias of command.aliases) this.prefixCommands.set(alias, command);
