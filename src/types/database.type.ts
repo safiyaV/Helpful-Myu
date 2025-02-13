@@ -18,6 +18,22 @@ export interface BaseGuild {
 
 export type Guild<Editable> = Editable extends false ? { id: Snowflake } & BaseGuild : Partial<BaseGuild>;
 
+export interface OldQuote {
+    id: string;
+    keyword: string;
+    text: string;
+    createdBy: string;
+    createdAt: { $date: string };
+}
+export interface Quote {
+    id: string;
+    name: string;
+    content: string;
+    createdBy: string;
+    createdAt: Date;
+    deleted: boolean;
+}
+
 export interface BaseUser {
     username: string;
     avatar: string | null;

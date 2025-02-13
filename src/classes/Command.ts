@@ -41,8 +41,8 @@ export class Command {
         options: MessageContextMenuCommandInteraction['options'];
         client: Client;
     }) => Promise<unknown>;
-    public button?: (interaction: ButtonInteraction) => Promise<unknown>;
-    public selectMenu?: (interaction: AnySelectMenuInteraction) => Promise<unknown>;
+    public button?: (data: { interaction: ButtonInteraction; message?: Message; args: string[] }) => Promise<unknown>;
+    public selectMenu?: (data: { interaction: AnySelectMenuInteraction; message?: Message; args: string[] }) => Promise<unknown>;
     public modal?: (interaction: Message, fields: Collection<string, TextInputComponent>) => Promise<unknown>;
     constructor(data: CommandData) {
         this.type = data.type;
@@ -129,8 +129,8 @@ interface CommandData {
         options: MessageContextMenuCommandInteraction['options'];
         client: Client;
     }) => Promise<unknown>;
-    button?: (interaction: ButtonInteraction) => Promise<unknown>;
-    selectMenu?: (interaction: AnySelectMenuInteraction) => Promise<unknown>;
+    button?: (data: { interaction: ButtonInteraction; message?: Message; args: string[] }) => Promise<unknown>;
+    selectMenu?: (data: { interaction: AnySelectMenuInteraction; message?: Message; args: string[] }) => Promise<unknown>;
     modal?: (interaction: Message, fields: Collection<string, TextInputComponent>) => Promise<unknown>;
 }
 

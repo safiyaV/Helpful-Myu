@@ -1,9 +1,9 @@
 import { ActivityType, Partials } from 'discord.js';
 import { Client } from './classes/Client.js';
 import 'dotenv/config';
-import { createCollection, getUserCountAll } from './handlers/database.js';
+import { createCollection, createUser, getUserCountAll } from './handlers/database.js';
 
-export const version = '0.0.1';
+export const version = '0.0.2';
 
 //Bot
 export const client = new Client({
@@ -17,22 +17,38 @@ export const client = new Client({
 client.once('ready', async () => {
     client.log(`Online`);
     await client.registerEvents();
-    //await client.registerCommands(['global', '1182260148501225552']);
-    await client.registerCommands(['global']);
+    await client.registerCommands(['981639333549322262']);
 
-    client.guilds.fetch().then((guilds) => {
-        let guild;
-        for (guild of guilds) {
-            guild = guild[1];
-            createCollection(guild.id);
-        }
-    });
+    // client.guilds.fetch().then((guilds) => {
+    //     let guild, member;
+    //     for (guild of guilds) {
+    //         guild = guild[1];
+    //         createCollection(guild.id);
+    //         guild.fetch().then((guild) => {
+    //             guild.members.fetch().then((members) => {
+    //                 for (member of members) {
+    //                     member = member[1];
+    //                     createUser(guild.id, {
+    //                         id: member.id,
+    //                         username: member.user.username,
+    //                         avatar: member.avatarURL(),
+    //                     });
+    //                 }
+    //             });
+    //         });
+    //     }
+    // });
 
-    client.user?.setPresence({ activities: [{ name: `Being cute while watching ${await getUserCountAll()} users`, type: ActivityType.Custom }], status: 'online' });
+    let count = 0;
     setInterval(async () => {
-        const activities = [`Being cute while watching ${await getUserCountAll()} users`, `Version ${version}`];
-        client.user?.setPresence({ activities: [{ name: activities[Math.floor(Math.random() * activities.length)], type: ActivityType.Custom }], status: 'online' });
-    }, 5 * 1000 * 60);
+        const activities = [
+            { name: `Watching ${await getUserCountAll()} users`, type: ActivityType.Custom },
+            { name: `Version ${version}`, type: ActivityType.Custom },
+        ];
+        const selectedActivity = activities[count];
+        client.user?.setPresence({ activities: [selectedActivity], status: 'online' });
+        activities.length - 1 === count ? (count = 0) : (count = count + 1);
+    }, 30_000);
 });
 
 client.login(process.env.TOKEN);

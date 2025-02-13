@@ -22,6 +22,7 @@ export interface ClientOptions extends DjsClientOptions {
 
 export class Client extends DjsClient {
     public cooldowns: Collection<string, Collection<string, number>> = new Collection();
+    public allCommands: Collection<string, Command> = new Collection();
     public prefixCommands: Collection<string, Command> = new Collection();
     public slashCommands: Collection<string, Command> = new Collection();
     public userContextCommands: Collection<string, Command> = new Collection();
@@ -44,8 +45,9 @@ export class Client extends DjsClient {
     /**Console logs data with a red time code */
     public error = this.logger.error;
 
-    public isBotOwner(member: User): boolean {
-        return member.id === this.application?.owner?.id;
+    public async isBotOwner(member: User): Promise<boolean> {
+        const application = await this.application?.fetch();
+        return member.id === application!.owner?.id;
     }
 
     public async registerEvents(): Promise<this> {
@@ -70,6 +72,7 @@ export class Client extends DjsClient {
                 const command: Command = (await import(cmdPath)).default as Command;
                 if (!command?.name) continue;
                 this.cooldowns.set(command.name, new Collection());
+                this.allCommands.set(command.name, command);
                 if (command.prefixCommand) this.prefixCommands.set(command.name, command);
                 if (command.aliases && command.prefixCommand) for (const alias of command.aliases) this.prefixCommands.set(alias, command);
                 if (command.slashCommand) commands.push(command.applicationData as never), this.slashCommands.set(command.name, command);
@@ -85,6 +88,15 @@ export class Client extends DjsClient {
             else this.rest.put(Routes.applicationGuildCommands(this.user.id, server), { body: commands }).catch((err) => this.error(err, server));
         }
         this.log('Commands Registered.');
+        return this;
+    }
+    public async deleteAllCommands(servers: Array<string>): Promise<this> {
+        for (const server of servers) {
+            if (!this.user) throw new Error(`ClientUser is invalid \n ${this}`);
+            if (server === 'global') this.rest.put(Routes.applicationCommands(this.user.id), { body: [] }).catch((err) => this.error(err, server));
+            else this.rest.put(Routes.applicationGuildCommands(this.user.id, server), { body: [] }).catch((err) => this.error(err, server));
+        }
+        this.log('Commands Deleted.');
         return this;
     }
 }

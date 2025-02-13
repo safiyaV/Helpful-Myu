@@ -4,10 +4,10 @@ import { client } from '../index.js';
 export default async (interaction: ChatInputCommandInteraction) => {
     const command = client.slashCommands.get(interaction.commandName);
     if (!command || command.disabled || !command.slashCommand)
-        return interaction.reply({ content: 'This command is disabled, it may be re-enabled in the future.', ephemeral: true });
+        return interaction.reply({ content: 'This command is disabled, it may be re-enabled in the future.', flags: ['Ephemeral'] });
     const hidden = !!interaction.options.get('hide')?.value || command.hidden || false;
-    if (command.deferReply) await interaction.deferReply({ ephemeral: hidden });
-    if (client.isBotOwner(interaction.user)) return command?.slashCommand({ interaction, options: interaction.options, client });
+    if (command.deferReply) await interaction.deferReply(hidden ? { flags: ['Ephemeral'] } : {});
+    if (await client.isBotOwner(interaction.user)) return command?.slashCommand({ interaction, options: interaction.options, client });
 
     const timestamps = client.cooldowns.get(command.name) as Collection<string, number>;
     const now = Date.now();

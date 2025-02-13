@@ -1,7 +1,7 @@
 import { Collection, Document, Filter, FindOneAndUpdateOptions, MongoClient, WithId } from 'mongodb';
 import { Client } from '../classes/Client';
 import { Client as DjsClient, Snowflake } from 'discord.js';
-import { Guild, User, UserProjectionOptions, UserSortOptions } from '../types/database.type.js';
+import { Guild, Quote, User, UserProjectionOptions, UserSortOptions } from '../types/database.type.js';
 
 const database = new MongoClient('mongodb://localhost:27017', { compressors: ['snappy', 'zlib'] }).db('HelpfulMyu');
 
@@ -51,6 +51,53 @@ export async function getGuildInfo(guild: Snowflake) {
     const collection = getCollection(guild, 'config');
     if (!collection) return false;
     const document = await collection.findOne({ id: guild });
+    return document;
+}
+
+export async function getQuote(guild: Snowflake, quoteID: string) {
+    const collection = getCollection(guild, 'quote');
+    if (!collection) return undefined;
+    const document = (await collection.findOne({ id: quoteID })) || undefined;
+    return document as WithId<Quote>;
+}
+
+export async function getQuotes(guild: Snowflake, quoteName: string) {
+    const collection = getCollection(guild, 'quote');
+    if (!collection) return [];
+    const documents = collection.find({ name: quoteName });
+    return (await documents.toArray()) as [WithId<Quote>];
+}
+
+export async function createQuote(guild: Snowflake, data: Quote) {
+    const collection = getCollection(guild, 'quote');
+    if (!collection) return false;
+    const fetchedQuote = await getQuote(guild, data.id);
+    if (!fetchedQuote || data.content !== fetchedQuote.content) {
+        data.id = `${data.name}_${(await collection.countDocuments({ name: data.name })) + 1}`;
+        const document = await collection.insertOne(data);
+        return await collection.findOne({ _id: document.insertedId });
+    }
+    return fetchedQuote;
+}
+
+export async function editQuote(guild: Snowflake, quoteID: string, data: Quote) {
+    const collection = getCollection(guild, 'quote');
+    if (!collection) return false;
+    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: data });
+    return document;
+}
+
+export async function deleteQuote(guild: Snowflake, quoteID: string) {
+    const collection = getCollection(guild, 'quote');
+    if (!collection) return false;
+    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: { deleted: true } });
+    return document;
+}
+
+export async function restoreQuote(guild: Snowflake, quoteID: string) {
+    const collection = getCollection(guild, 'quote');
+    if (!collection) return false;
+    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: { deleted: false } });
     return document;
 }
 

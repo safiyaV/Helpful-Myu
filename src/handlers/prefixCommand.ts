@@ -1,11 +1,11 @@
 import type { Collection, Message } from 'discord.js';
 import { client } from '../index.js';
 
-export default (message: Message, prefix: string) => {
+export default async (message: Message, prefix: string) => {
     const args = message.content.slice(prefix.length).split(/\s+(?=(?:[^"]*"[^"]*")*[^"]*$)/g);
     const command = client.prefixCommands.get(args.shift()?.toLowerCase() as string);
     if (!command || !command.prefixCommand || !message.channel.isTextBased() || message.channel.isDMBased() || message.channel.isThread()) return; //message.reply('Command unavailable.');
-    if (client.isBotOwner(message.author)) return command.prefixCommand({ message, args, client });
+    if (await client.isBotOwner(message.author)) return command.prefixCommand({ message, args, client });
     if (command.disabled) return message.reply('This command is disabled, it may be re-enabled in the future.');
     if (command.nsfw && !message.channel.nsfw) return message.reply('This command cannot be used here.');
 
