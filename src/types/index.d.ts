@@ -6,6 +6,7 @@ declare global {
             COMMANDS_PATH: string;
             EVENTS_PATH: string;
             TOKEN: string;
+            WEB_PORT: string;
         }
     }
 }

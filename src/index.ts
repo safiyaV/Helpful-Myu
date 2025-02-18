@@ -2,8 +2,10 @@ import { ActivityType, Partials } from 'discord.js';
 import { Client } from './classes/Client.js';
 import 'dotenv/config';
 import { createCollection, createUser, getUserCountAll } from './handlers/database.js';
+import Fastify from 'fastify';
+import Logger from './classes/logger.js';
 
-export const version = '0.0.2';
+const version = '0.0.3';
 
 //Bot
 export const client = new Client({
@@ -19,30 +21,28 @@ client.once('ready', async () => {
     await client.registerEvents();
     await client.registerCommands(['981639333549322262']);
 
-    // client.guilds.fetch().then((guilds) => {
-    //     let guild, member;
-    //     for (guild of guilds) {
-    //         guild = guild[1];
-    //         createCollection(guild.id);
-    //         guild.fetch().then((guild) => {
-    //             guild.members.fetch().then((members) => {
-    //                 for (member of members) {
-    //                     member = member[1];
-    //                     createUser(guild.id, {
-    //                         id: member.id,
-    //                         username: member.user.username,
-    //                         avatar: member.avatarURL(),
-    //                     });
-    //                 }
-    //             });
-    //         });
-    //     }
-    // });
+    client.guilds.fetch().then((guilds) => {
+        guilds.map((guild) => {
+            //createCollection(guild.id);
+            guild.fetch().then(async (guild) => {
+                guild.members.fetch().then((members) => {
+                    members.map((member) => {
+                        if (!member.user.bot)
+                            createUser(guild.id, {
+                                id: member.id,
+                                username: member.user.username,
+                                avatar: member.avatarURL(),
+                            });
+                    });
+                });
+            });
+        });
+    });
 
     let count = 0;
     setInterval(async () => {
         const activities = [
-            { name: `Watching ${await getUserCountAll()} users`, type: ActivityType.Custom },
+            { name: `Watching ${(await getUserCountAll()) - 2} users`, type: ActivityType.Custom },
             { name: `Version ${version}`, type: ActivityType.Custom },
         ];
         const selectedActivity = activities[count];
@@ -52,3 +52,15 @@ client.once('ready', async () => {
 });
 
 client.login(process.env.TOKEN);
+
+const logger = new Logger('WebServer', '212;47;151');
+const fastify = Fastify({ logger: { level: 'error' }, ignoreTrailingSlash: true });
+
+fastify.register((await import('./routes/index.js')).default);
+
+try {
+    await fastify.listen({ port: +process.env.WEB_PORT });
+    logger.log(`Port ${process.env.WEB_PORT} open.`);
+} catch (err) {
+    logger.log(err);
+}

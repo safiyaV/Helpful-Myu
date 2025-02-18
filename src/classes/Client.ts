@@ -1,4 +1,4 @@
-import { type ClientOptions as DjsClientOptions, Collection, Client as DjsClient, Routes, User } from 'discord.js';
+import { type ClientOptions as DjsClientOptions, Collection, Client as DjsClient, Routes, Team, User } from 'discord.js';
 import { glob } from 'glob';
 import type { Event } from './Event.js';
 import { type Command } from './Command.js';
@@ -47,7 +47,13 @@ export class Client extends DjsClient {
 
     public async isBotOwner(member: User): Promise<boolean> {
         const application = await this.application?.fetch();
-        return member.id === application!.owner?.id;
+        if (!application || !application.owner) return false;
+        const owner = application.owner;
+        if (owner instanceof Team) {
+            return owner.members.has(member.id);
+        } else {
+            return member.id === owner.id;
+        }
     }
 
     public async registerEvents(): Promise<this> {

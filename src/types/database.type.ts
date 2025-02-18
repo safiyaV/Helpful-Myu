@@ -14,6 +14,21 @@ export interface BaseGuild {
     name: string;
     excludedChannels: string[];
     adminRoles: Role[];
+    join: {
+        logChannel: string;
+        messageChannel: string;
+        message: string;
+    };
+    leave: {
+        logChannel: string;
+        messageChannel: string;
+        message: string;
+    };
+    boost: {
+        logChannel: string;
+        messageChannel: string;
+        message: string;
+    };
 }
 
 export type Guild<Editable> = Editable extends false ? { id: Snowflake } & BaseGuild : Partial<BaseGuild>;

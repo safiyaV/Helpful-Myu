@@ -124,7 +124,6 @@ async function makeEmbed(quote: WithId<Quote>, user: User): Promise<APIEmbed> {
             break;
         }
     }
-    console.log(image);
     return {
         color: client.embedColor,
         title: `Quote ${quote.id}`,
