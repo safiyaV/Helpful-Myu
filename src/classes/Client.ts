@@ -1,4 +1,4 @@
-import { type ClientOptions as DjsClientOptions, Collection, Client as DjsClient, Routes, Team, User } from 'discord.js';
+import { type ClientOptions as DjsClientOptions, Collection, Client as DjsClient, GuildMember, Routes, Team, User } from 'discord.js';
 import { glob } from 'glob';
 import type { Event } from './Event.js';
 import { type Command } from './Command.js';
@@ -104,5 +104,15 @@ export class Client extends DjsClient {
         }
         this.log('Commands Deleted.');
         return this;
+    }
+    public formatMessage(user: GuildMember, message: string) {
+        message = message.replaceAll('{user}', `<@${user.id}>`);
+        message = message.replaceAll('{user.avatar}', `${user.displayAvatarURL({ size: 1024 })}`);
+        message = message.replaceAll('{user.banner}', `${user.displayBannerURL({ size: 1024 })}`);
+        message = message.replaceAll('{user.id}', user.id);
+        message = message.replaceAll('{guild.name}', `${user.guild.name}`);
+        message = message.replaceAll('{guild.id}', `${user.guild.id}`);
+        message = message.replaceAll('{guild.icon}', `<@${user.guild.iconURL({ size: 1024 })}>`);
+        return message;
     }
 }

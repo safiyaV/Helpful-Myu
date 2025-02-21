@@ -1,10 +1,10 @@
 import { getGuildInfo } from '../handlers/database.js';
 import { Event } from '../classes/Event.js';
+import { client } from '../index.js';
 
 export default new Event('guildMemberUpdate', {
     async fn(oldMember, newMember) {
-        const fetchedOldMember = await oldMember.fetch(true);
-        if (fetchedOldMember.premiumSince === null && newMember.premiumSince) {
+        if (oldMember.premiumSince !== newMember.premiumSince) {
             const guild = newMember.guild;
             const guildInfo = await getGuildInfo(guild.id);
             if (!guildInfo) return;
@@ -18,7 +18,7 @@ export default new Event('guildMemberUpdate', {
                 .fetch(guildInfo.boost.messageChannel)
                 .then((messageChannel) => {
                     if (messageChannel?.isTextBased()) {
-                        messageChannel.send(guildInfo.boost!.message.replaceAll('@{USER}', `<@${newMember.id}>`));
+                        messageChannel.send(client.formatMessage(newMember, guildInfo.boost.message));
                     }
                 })
                 .catch(() => {});

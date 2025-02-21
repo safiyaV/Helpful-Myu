@@ -17,12 +17,12 @@ export default new Event('guildMemberAdd', {
                     embeds: [
                         {
                             author: {
-                                name: `${member.user.username} (${member.id}) Joined ♡`,
+                                name: `${member.user.username} Joined ♡`,
                                 icon_url: member.displayAvatarURL(),
                             },
                             color: client.embedColor,
-                            description: `♡ Created Account: <t:${created}:D> (<t:${created}:R>)\n♡ Joined: <t:${joined}> (<t:${joined}:R>)`,
-                            thumbnail: { url: member.displayAvatarURL() },
+                            description: `<@${member.id}>\n♡ ID: ${member.id}\n♡ Account Created: <t:${created}:D> (<t:${created}:R>)\n♡ Joined: <t:${joined}> (<t:${joined}:R>)`,
+                            thumbnail: { url: member.displayAvatarURL({ size: 1024 }) },
                         },
                     ],
                 });
@@ -32,7 +32,7 @@ export default new Event('guildMemberAdd', {
             .fetch(guildInfo.join.messageChannel)
             .then((messageChannel) => {
                 if (messageChannel?.isTextBased()) {
-                    messageChannel.send(guildInfo.join!.message.replaceAll('@{USER}', `<@${member.id}>`));
+                    messageChannel.send(client.formatMessage(member, guildInfo.join.message));
                 }
             })
             .catch(() => {});

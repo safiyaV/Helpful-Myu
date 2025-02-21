@@ -5,7 +5,7 @@ import { createCollection, createUser, getUserCountAll } from './handlers/databa
 import Fastify from 'fastify';
 import Logger from './classes/logger.js';
 
-const version = '0.0.3';
+const version = '0.3.1';
 
 //Bot
 export const client = new Client({

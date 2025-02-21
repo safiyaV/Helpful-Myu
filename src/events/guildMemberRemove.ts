@@ -1,5 +1,6 @@
 import { deleteUser, getGuildInfo } from '../handlers/database.js';
 import { Event } from '../classes/Event.js';
+import { client } from '../index.js';
 
 export default new Event('guildMemberRemove', {
     async fn(member) {
@@ -16,11 +17,11 @@ export default new Event('guildMemberRemove', {
                     embeds: [
                         {
                             author: {
-                                name: `${member.user.username} (${member.id}) Left >~<`,
+                                name: `${member.user.username} Left >~<`,
                                 icon_url: member.displayAvatarURL(),
                             },
-                            description: `♡ Created Account: <t:${created}:D> (<t:${created}:R>)\nLeft: <t:${left}> (<t:${left}:R>)`,
-                            thumbnail: { url: member.displayAvatarURL() },
+                            description: `<@${member.id}>\n♡ ID: ${member.id}\n♡ Account Created: <t:${created}:D> (<t:${created}:R>)\n♡ Left: <t:${left}> (<t:${left}:R>)`,
+                            thumbnail: { url: member.displayAvatarURL({ size: 1024 }) },
                             color: 0xff0000,
                         },
                     ],
@@ -29,9 +30,9 @@ export default new Event('guildMemberRemove', {
             .catch(() => {});
         guild.channels
             .fetch(guildInfo.leave.messageChannel)
-            .then((messageChannel) => {
+            .then(async (messageChannel) => {
                 if (messageChannel?.isTextBased()) {
-                    messageChannel.send(guildInfo.leave!.message.replaceAll('@{USER}', `<@${member.id}>`));
+                    messageChannel.send(client.formatMessage(await member.fetch(true), guildInfo.leave.message));
                 }
             })
             .catch(() => {});
