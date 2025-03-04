@@ -1,12 +1,14 @@
 import type { Collection, Message } from 'discord.js';
 import { client } from '../index.js';
+import { getGuildInfo } from './database.js';
 
 export default async (message: Message, prefix: string) => {
     const args = message.content.slice(prefix.length).split(/\s+(?=(?:[^"]*"[^"]*")*[^"]*$)/g);
     const command = client.prefixCommands.get(args.shift()?.toLowerCase() as string);
-    if (!command || !command.prefixCommand || !message.channel.isTextBased() || message.channel.isDMBased() || message.channel.isThread()) return; //message.reply('Command unavailable.');
+    if (!command || !command.prefixCommand || !message.channel.isTextBased() || !message.inGuild() || message.channel.isThread()) return; //message.reply('Command unavailable.');
     if (await client.isBotOwner(message.author)) return command.prefixCommand({ message, args, client });
-    if (command.disabled) return message.reply('This command is disabled, it may be re-enabled in the future.');
+    const guildInfo = await getGuildInfo(message.guildId);
+    if (command.disabled || (guildInfo && guildInfo.modules[command.category] === false)) return message.reply('This command or module is disabled.');
     if (command.nsfw && !message.channel.nsfw) return message.reply('This command cannot be used here.');
 
     const timestamps = client.cooldowns.get(command.name) as Collection<string, number>;

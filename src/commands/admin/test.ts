@@ -18,20 +18,30 @@ export default new Command({
             embeds: [
                 {
                     author: {
-                        name: `${member.user.username} Joined ♡`,
+                        name: member.user.username,
                         icon_url: member.displayAvatarURL(),
                     },
                     color: client.embedColor,
-                    description: `<@${member.id}>\n♡ ID: ${member.id}\n♡ Account Created: <t:${created}:D> (<t:${created}:R>)\n♡ Joined: <t:${joined}> (<t:${joined}:R>)`,
-                    thumbnail: { url: member.displayAvatarURL({ size: 1024 }) },
+                    fields: [
+                        { name: `Message Edited in <#${message.channel.id}>`, value: '[Jump to Message](https://example.com)' },
+                        { name: 'Before', value: 'message before edit' },
+                        { name: 'After', value: 'message after edit' },
+                    ],
+                    footer: {
+                        text: `User ID: ${member.id}`,
+                    },
+                    timestamp: new Date().toISOString(),
                 },
                 {
                     author: {
-                        name: `${member.user.username} Left >~<`,
+                        name: `${member.user.username}`,
                         icon_url: member.displayAvatarURL(),
                     },
-                    description: `<@${member.id}>\n♡ ID: ${member.id}\n♡ Account Created: <t:${created}:D> (<t:${created}:R>)\n♡ Left: <t:${joined}> (<t:${joined}:R>)`,
-                    thumbnail: { url: member.displayAvatarURL({ size: 1024 }) },
+                    description: `**Message sent by <@${message.author.id}> Deleted in <#${message.channel.id}>**\nMessage`,
+                    footer: {
+                        text: `Author: ${member.id} | Message ID: ${message.id}`,
+                    },
+                    timestamp: new Date().toISOString(),
                     color: 0xff0000,
                 },
             ],

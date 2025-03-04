@@ -6,7 +6,7 @@ export default new Command({
     name: 'deletequote',
     description: 'Deletes a quote.',
     disabled: false,
-    category: 'quotes',
+    category: 'quote',
     deferReply: true,
     dm_permission: false,
     hidden: false,

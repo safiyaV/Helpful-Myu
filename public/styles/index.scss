@@ -19,10 +19,19 @@ html {
         align-items: center;
         justify-content: center;
         background-image: url("/static/assets/GridBG.png");
-        width: calc(max(50vw, min(1000px, 100vw)) - 2rem);
+        width: calc(max(70vw, min(1440px, 100vw)) - 2rem);
         margin: auto;
         padding: 0 2rem 2rem;
     }
+}
+
+.hidden {
+    display: none !important;
+    animation-play-state: paused !important;
+}
+
+.rotated {
+    transform: rotate(180deg);
 }
 
 nav {
@@ -40,7 +49,7 @@ nav {
         font-weight: 900;
     }
 
-    div {
+    >div {
         width: 100%;
         padding: 0.4rem 0.9rem;
         background-color: #ef78a6;
@@ -48,6 +57,7 @@ nav {
         display: flex;
         justify-content: space-evenly;
         box-shadow: 4px 4px #eed9f2;
+        position: relative;
 
         a {
             color: #fff !important;
@@ -61,10 +71,89 @@ nav {
             flex-grow: 1;
             text-align: center;
             margin: 0 6px;
+            min-width: 50px !important;
+            max-width: 100px !important;
+            flex-grow: 1;
+            flex-shrink: 1;
 
             &:hover {
                 color: rgb(246, 236, 248) !important;
-                text-shadow: 1px 1px #eed9f2;
+                text-shadow: 1px 1px 1px black;
+            }
+        }
+
+        .login {
+            cursor: pointer;
+        }
+
+        #user {
+            pointer-events: visibleStroke;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 0 6px;
+            color: white;
+            font-weight: 800;
+            transition:
+                color 200ms,
+                text-shadow 200ms;
+            min-width: 50px !important;
+            max-width: 200px !important;
+
+            &:hover {
+                color: rgb(246, 236, 248) !important;
+                text-shadow: 1px 1px 1px black;
+            }
+
+            #username {
+                padding-left: 0.5rem;
+                max-width: 80%;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            #userAvatar {
+                border-radius: 100%;
+                padding: 2px;
+            }
+
+            #caret {
+                margin-left: 0.25rem;
+            }
+        }
+
+        .popout {
+            display: flex;
+            flex-direction: column;
+            padding: 0.25rem 0.5rem;
+            position: absolute;
+            background: #ef78a6;
+            top: 2.5rem;
+            right: 1vw;
+            text-align: center;
+            border-radius: 24px;
+            box-sizing: content-box;
+            box-shadow: 4px 4px #eed9f2;
+
+            #logout,
+            a {
+                border-radius: 8px;
+                color: rgb(255, 255, 255);
+                cursor: pointer;
+                padding: 0.5rem 0.75rem;
+                transition: all cubic-bezier(0.4, 0, 0.2, 1) 150ms;
+                text-decoration: none;
+                line-height: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            #logout:hover {
+                color: rgb(236, 84, 84);
+                text-shadow: 1px 1px 1px black;
             }
         }
     }
@@ -118,8 +207,8 @@ nav {
 }
 
 discord-widget {
-    opacity: 0;
     border-radius: 0 !important;
+    opacity: 0;
     animation-name: fadeIn;
     animation-duration: 1s;
     animation-delay: 200ms;
@@ -137,5 +226,11 @@ discord-widget {
             border-radius: 0 !important;
             height: 40px !important;
         }
+    }
+}
+
+@media screen and (max-height: 580px) {
+    #content {
+        height: auto !important;
     }
 }

@@ -3,7 +3,19 @@
     <div>
         <a href="/">Home</a>
         <a href="/dash">Dashboard</a>
-        <a href="/about">About</a>
-        <a href="https://discord.com/nekord">Discord</a>
+        <!-- <a href="/about">About</a> -->
+        <!-- <a href="https://discord.com/nekord">Discord</a> -->
+        <a class="login" target="popup"> Login </a>
+        <div id="user" class="user hidden">
+            <img id="userAvatar" loading="lazy" alt="User Avatar" width="25px" height="25px" />
+            <span id="username"></span>
+            <svg id="caret" class="rotated" width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 14.5l5-5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </div>
+        <div class="popout hidden" id="nav_popout">
+            <!-- <a href="/dashboard/me/">Profile</a> -->
+            <div id="logout">Logout</div>
+        </div>
     </div>
 </nav>

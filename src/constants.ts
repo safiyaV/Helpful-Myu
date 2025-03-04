@@ -2,7 +2,6 @@ import { FastifyReply } from 'fastify';
 import { createReadStream, readFileSync } from 'fs';
 import { DOMWindow, JSDOM } from 'jsdom';
 import path from 'path';
-import { Document } from 'mongodb';
 
 export async function sendHtml(reply: FastifyReply, file: string) {
     reply.type('text/html').send(createReadStream(path.join(process.cwd(), file)));
@@ -25,7 +24,7 @@ export async function constructPage(
         };
         body: { files?: Array<string> };
     },
-    document?: (window: DOMWindow, document: Document) => Promise<unknown | void>
+    document?: (window: DOMWindow, document: DOMWindow['document']) => Promise<unknown | void>
 ) {
     const headBuffers: Buffer[] = [];
     const bodyBuffers: Buffer[] = [];

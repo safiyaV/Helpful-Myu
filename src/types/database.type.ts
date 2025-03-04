@@ -1,4 +1,4 @@
-import { Snowflake } from 'discord.js';
+import { Message, Snowflake } from 'discord.js';
 import { SortDirection } from 'mongodb';
 
 export type If<Value extends boolean, TrueResult, FalseResult = null> = Value extends true ? TrueResult : Value extends false ? FalseResult : TrueResult | FalseResult;
@@ -14,6 +14,15 @@ export interface BaseGuild {
     name: string;
     excludedChannels: string[];
     adminRoles: Role[];
+    prefix: string;
+    modules: {
+        admin: boolean;
+        boost: boolean;
+        join: boolean;
+        leave: boolean;
+        quote: boolean;
+        message: boolean;
+    };
     join: {
         logChannel: string;
         messageChannel: string;
@@ -29,9 +38,21 @@ export interface BaseGuild {
         messageChannel: string;
         message: string;
     };
+    message: {
+        editLogChannel: string;
+        deleteLogChannel: string;
+    };
 }
 
 export type Guild<Editable> = Editable extends false ? { id: Snowflake } & BaseGuild : Partial<BaseGuild>;
+
+export interface databaseMessage {
+    id: Snowflake;
+    content: null | string;
+    created: number;
+    author: Snowflake;
+    attachments: Message['attachments'];
+}
 
 export interface OldQuote {
     id: string;

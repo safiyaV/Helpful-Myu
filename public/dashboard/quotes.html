@@ -1,3 +1,32 @@
 <div id="content">
-    <main style="width: 100%; border-radius: 12px"></main>
+    <main>
+        <ul class="nav">
+            <li><a href="/dash/">Overview</a></li>
+            <li><a href="/dash/modules/">Modules</a></li>
+            <li><a href="/dash/quotes/">Quotes</a></li>
+        </ul>
+        <div id="display" style="display: flex; flex-direction: column; align-items: center">
+            <form id="searchForm">
+                <input id="searchInput" name="search" type="search" placeholder="Search Quotes..." />
+                <input type="submit" value="Search" />
+            </form>
+
+            <h2 style="margin: 0 1rem" id="quoteError"></h2>
+
+            <div class="tableContainer">
+                <table id="quoteTable">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Creator</th>
+                        <th>Creation Date</th>
+                        <th>Content</th>
+                        <th>Manage</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </main>
 </div>
+
+<script src="/static/scripts/quotes.js"></script>

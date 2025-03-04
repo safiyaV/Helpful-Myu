@@ -28,7 +28,16 @@ async function routes(fastify: FastifyInstance) {
         });
         return reply;
     });
+    fastify.all('/about', (req, reply) => {
+        constructPage(reply, {
+            language: 'en-US',
+            head: { title: 'Home', description: '', image: '/static/assets/favicon_x256.png', files: ['public/head.html'] },
+            body: { files: ['public/nav.html', 'public/about.html'] },
+        });
+        return reply;
+    });
 
+    fastify.register((await import('./api.js')).default, { prefix: '/api' });
     fastify.register((await import('./dashboard.js')).default, { prefix: '/dash' });
 }
 

@@ -12,6 +12,8 @@ import type {
 } from 'discord.js';
 import type { Client } from './Client';
 
+type categories = 'admin' | 'quote';
+
 export class Command {
     public type: number | undefined = 1;
     public name = '';
@@ -24,7 +26,7 @@ export class Command {
     public nsfw = false;
     public aliases: Array<string> = [];
     public cooldown = 2_000;
-    public category = '';
+    public category: categories;
     public disabled = false;
     public hidden = false;
     public deferReply = false;
@@ -116,7 +118,7 @@ interface CommandData {
     aliases?: Array<string>;
     /**Cooldown in ms */
     cooldown?: number;
-    category: string;
+    category: categories;
     disabled?: boolean;
     hidden?: boolean;
     deferReply?: boolean;

@@ -1,2 +1,10 @@
 <link rel="stylesheet" type="text/css" href="/static/styles/index.css" />
 <meta name="theme-color" content="#ef78a6" />
+<link rel="preconnect" href="https://discord.com" />
+<script async src="/static/scripts/auth.js"></script>
+<script>
+    window.addEventListener('message', (event) => {
+        if (event.origin !== location.origin) return;
+        if (event.data === 'reload') location.reload();
+    });
+</script>

@@ -8,7 +8,7 @@ export default new Command({
     name: 'createquote',
     description: 'Creates a quote.',
     disabled: false,
-    category: 'quotes',
+    category: 'quote',
     deferReply: true,
     dm_permission: false,
     hidden: false,

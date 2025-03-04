@@ -3,18 +3,17 @@ function timeCode(data: { name: string; color: string }, type?: 'error') {
 }
 
 export default class Logger {
-    public name: string;
-    public color: string;
-    constructor(name: string, color: string) {
-        this.name = name;
-        this.color = '\x1b[38;2;' + color + 'm';
-    }
     /**Console logs data with a blue time code */
-    public log(...message: any) {
-        console.log(timeCode({ name: this.name, color: this.color }), ...message);
-    }
+    public log;
     /**Console logs data with a red time code */
-    public error(...message: any) {
-        console.log(timeCode({ name: this.name, color: this.color }, 'error'), ...message);
+    public error;
+    constructor(name: string, color: string) {
+        const parsedColor = `\x1b[38;2;${color}m`;
+        this.log = (...message: any) => {
+            console.log(timeCode({ name, color: parsedColor }), ...message);
+        };
+        this.error = (...message: any) => {
+            console.log(timeCode({ name, color: parsedColor }, 'error'), ...message);
+        };
     }
 }

@@ -1,13 +1,16 @@
 import type { ChatInputCommandInteraction, Collection } from 'discord.js';
 import { client } from '../index.js';
+import { getGuildInfo } from './database.js';
 
 export default async (interaction: ChatInputCommandInteraction) => {
     const command = client.slashCommands.get(interaction.commandName);
-    if (!command || command.disabled || !command.slashCommand)
-        return interaction.reply({ content: 'This command is disabled, it may be re-enabled in the future.', flags: ['Ephemeral'] });
+    if (!interaction.inGuild() || !command || !command.slashCommand) return;
     const hidden = !!interaction.options.get('hide')?.value || command.hidden || false;
     if (command.deferReply) await interaction.deferReply(hidden ? { flags: ['Ephemeral'] } : {});
     if (await client.isBotOwner(interaction.user)) return command?.slashCommand({ interaction, options: interaction.options, client });
+    const guildInfo = await getGuildInfo(interaction.guildId);
+    if (command.disabled || (guildInfo && guildInfo.modules[command.category] === false))
+        return interaction.reply({ content: 'This command or module is disabled.', flags: ['Ephemeral'] });
 
     const timestamps = client.cooldowns.get(command.name) as Collection<string, number>;
     const now = Date.now();

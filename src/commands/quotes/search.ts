@@ -21,8 +21,9 @@ export default new Command({
             description: 'Hide the response',
         },
     ],
+    deferReply: true,
     aliases: ['qs', 'qsearch'],
-    category: 'quotes',
+    category: 'quote',
     async slashCommand({ interaction, options }) {
         if (!interaction.guildId) return;
         try {

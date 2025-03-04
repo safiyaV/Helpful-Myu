@@ -1,3 +1,49 @@
 <div id="content">
-    <main style="width: 100%; border-radius: 12px"></main>
+    <main>
+        <ul class="nav">
+            <li><a href="/dash/">Overview</a></li>
+            <li><a href="/dash/modules/">Modules</a></li>
+            <li><a href="/dash/quotes/">Quotes</a></li>
+        </ul>
+        <div id="display">
+            <div id="server">
+                <img id="serverIcon" src="" loading="lazy" />
+                <h1 id="serverName"></h1>
+            </div>
+            <div class="section">
+                <h3>Server Info</h3>
+                <div id="basicInfo">
+                    <div class="infoStat"><span>Members: </span><span id="memberCount">Loading...</span></div>
+                    <div class="infoStat"><span>Categories: </span><span id="categoryCount">Loading...</span></div>
+                    <div class="infoStat"><span>Text Channels: </span><span id="channelCount">Loading...</span></div>
+                    <div class="infoStat"><span>Voice Channels: </span><span id="vcCount">Loading...</span></div>
+                    <div class="infoStat"><span>Roles: </span><span id="roleCount">Loading...</span></div>
+                    <div class="infoButtons"><button id="copyServerId">Copy Server ID</button></div>
+                </div>
+            </div>
+            <div class="section">
+                <h3>Server Usage Stats</h3>
+                <div id="basicInfo">This section is a work in progress.</div>
+            </div>
+            <div class="section" id="settingSection">
+                <h3>Bot Settings</h3>
+                <div id="settings">
+                    <div class="setting"><label for="nickname">Nickname</label><input id="nickname" type="text" placeholder="Helpful Myu" /></div>
+                    <div class="setting"><label for="prefix">Command Prefix</label><input id="prefix" type="text" placeholder="=" /></div>
+                    <div class="setting">
+                        <label for="admins">Manager Roles</label>
+                        <ul id="admins" multiple size="1">
+                            <li value="" disabled selected>Select Roles...</li>
+                        </ul>
+                    </div>
+                    <div class="settingsButtons"><button>Save</button><button>Reset</button></div>
+                </div>
+            </div>
+            <div class="section">
+                <h3>Bot Usage Stats</h3>
+                <div id="basicInfo">This section is a work in progress.</div>
+            </div>
+        </div>
+    </main>
 </div>
+<script src="/static/scripts/dashOverview.js"></script>

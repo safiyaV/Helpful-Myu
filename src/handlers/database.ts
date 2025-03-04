@@ -1,11 +1,11 @@
 import { Collection, Document, Filter, FindOneAndUpdateOptions, MongoClient, WithId } from 'mongodb';
 import { Client } from '../classes/Client';
-import { Client as DjsClient, Snowflake } from 'discord.js';
-import { Guild, Quote, User, UserProjectionOptions, UserSortOptions } from '../types/database.type.js';
+import { Client as DjsClient, Message, Snowflake } from 'discord.js';
+import { databaseMessage, Guild, Quote, User, UserProjectionOptions, UserSortOptions } from '../types/database.type.js';
 
 const database = new MongoClient('mongodb://localhost:27017', { compressors: ['snappy', 'zlib'] }).db('HelpfulMyu');
 
-export function getCollection(guild: Snowflake, type: 'config' | 'quote' | 'user') {
+export function getCollection(guild: Snowflake, type: 'config' | 'quote' | 'user' | 'message') {
     const collection = database.collection(guild + `_${type}s`);
     if (!collection.collectionName) return undefined;
     return collection;
@@ -22,6 +22,7 @@ export async function createCollection(guild: Snowflake) {
     collection = await database.createCollection(guild + '_configs');
     await database.createCollection(guild + '_quotes');
     await database.createCollection(guild + '_users');
+    await database.createCollection(guild + '_messages');
     const client = (await import('../index.js')).client;
     if (client.isReady()) {
         const apiGuild = await client.guilds.fetch(guild);
@@ -34,6 +35,14 @@ export async function createCollection(guild: Snowflake) {
                     icon: apiGuild.iconURL(),
                     excludedChannels: [],
                     adminRoles: [],
+                    prefix: '=',
+                    modules: {
+                        boost: true,
+                        join: true,
+                        leave: true,
+                        quote: true,
+                        message: true,
+                    },
                     join: {
                         logChannel: '',
                         messageChannel: '',
@@ -49,9 +58,13 @@ export async function createCollection(guild: Snowflake) {
                         messageChannel: '',
                         message: '',
                     },
+                    message: {
+                        editLogChannel: '',
+                        deleteLogChannel: '',
+                    },
                 },
             },
-            { upsert: true }
+            { upsert: true, projection: { _id: 0 } }
         );
     }
     return collection;
@@ -60,28 +73,28 @@ export async function createCollection(guild: Snowflake) {
 export async function editGuildInfo(guild: Snowflake, data: Guild<true>) {
     const collection = getCollection(guild, 'config');
     if (!collection) return undefined;
-    const document = await collection.findOneAndUpdate({ id: guild }, { $set: data });
+    const document = await collection.findOneAndUpdate({ id: guild }, { $set: data }, { projection: { _id: 0 } });
     return (document as WithId<Guild<false>>) || undefined;
 }
 
 export async function getGuildInfo(guild: Snowflake) {
     const collection = getCollection(guild, 'config');
     if (!collection) return undefined;
-    const document = await collection.findOne({ id: guild });
+    const document = await collection.findOne({ id: guild }, { projection: { _id: 0 } });
     return (document as WithId<Guild<false>>) || undefined;
 }
 
 export async function getQuote(guild: Snowflake, quoteID: string) {
     const collection = getCollection(guild, 'quote');
     if (!collection) return undefined;
-    const document = await collection.findOne({ id: quoteID });
+    const document = await collection.findOne({ id: quoteID }, { projection: { _id: 0 } });
     return (document as WithId<Quote>) || undefined;
 }
 
 export async function getQuotes(guild: Snowflake, quoteName: string) {
     const collection = getCollection(guild, 'quote');
     if (!collection) return [];
-    const documents = collection.find({ name: quoteName });
+    const documents = collection.find(!quoteName ? {} : { name: quoteName }, { projection: { _id: 0 } });
     return (await documents.toArray()) as [WithId<Quote>];
 }
 
@@ -92,7 +105,7 @@ export async function createQuote(guild: Snowflake, data: Quote) {
     if (!fetchedQuote || data.content !== fetchedQuote.content) {
         data.id = `${data.name}_${(await collection.countDocuments({ name: data.name })) + 1}`;
         const document = await collection.insertOne(data);
-        return ((await collection.findOne({ _id: document.insertedId })) as WithId<Quote>) || undefined;
+        return ((await collection.findOne({ _id: document.insertedId }, { projection: { _id: 0 } })) as WithId<Quote>) || undefined;
     }
     return fetchedQuote || undefined;
 }
@@ -100,21 +113,21 @@ export async function createQuote(guild: Snowflake, data: Quote) {
 export async function editQuote(guild: Snowflake, quoteID: string, data: Quote) {
     const collection = getCollection(guild, 'quote');
     if (!collection) return undefined;
-    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: data });
+    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: data }, { projection: { _id: 0 } });
     return (document as WithId<Quote>) || undefined;
 }
 
 export async function deleteQuote(guild: Snowflake, quoteID: string) {
     const collection = getCollection(guild, 'quote');
     if (!collection) return undefined;
-    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: { deleted: true } });
+    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: { deleted: true } }, { projection: { _id: 0 } });
     return (document as WithId<Quote>) || undefined;
 }
 
 export async function restoreQuote(guild: Snowflake, quoteID: string) {
     const collection = getCollection(guild, 'quote');
     if (!collection) return undefined;
-    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: { deleted: false } });
+    const document = await collection.findOneAndUpdate({ id: quoteID }, { $set: { deleted: false } }, { projection: { _id: 0 } });
     return (document as WithId<Quote>) || undefined;
 }
 
@@ -134,7 +147,7 @@ export async function createUser(guild: Snowflake, data: User<false>) {
     const fetchedUser = await getUser(guild, data.id);
     if (!fetchedUser) {
         const document = await collection.insertOne(data);
-        return ((await collection.findOne({ _id: document.insertedId })) as WithId<User<false>>) || undefined;
+        return ((await collection.findOne({ _id: document.insertedId }, { projection: { _id: 0 } })) as WithId<User<false>>) || undefined;
     }
     return fetchedUser;
 }
@@ -142,7 +155,7 @@ export async function createUser(guild: Snowflake, data: User<false>) {
 export async function getUser(guild: Snowflake, user: User<false>['id']) {
     const collection = getCollection(guild, 'user');
     if (!collection) return undefined;
-    const document = await collection.findOne({ id: user });
+    const document = await collection.findOne({ id: user }, { projection: { _id: 0 } });
     return (document as WithId<User<false>>) || undefined;
 }
 

@@ -1,0 +1,196 @@
+main {
+    width: 100% !important;
+    border-radius: 12px;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+}
+
+.nav {
+    list-style-type: none;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 1px solid #f1b4cc;
+    margin: 0 1rem;
+
+    a {
+        color: #ef78a6;
+        text-decoration: none;
+        font-weight: 900;
+    }
+}
+
+#display {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-color: #f1b4cc transparent;
+    scrollbar-width: thin;
+
+    #server {
+        display: flex;
+        padding: 1rem;
+        align-items: center;
+        gap: 1rem;
+
+        #serverIcon {
+            border-radius: 100%;
+            border: 5px solid #f1b4cc;
+            width: 128px;
+            height: 128px;
+        }
+
+        #serverName {
+            margin: 0;
+        }
+    }
+
+    .section {
+        background-color: #f1b4cc;
+        border-radius: 14px;
+        margin: 0 1rem 1rem;
+        padding: 28px;
+        box-shadow: 4px 4px #eed9f2;
+        opacity: 0;
+        animation-name: fadeIn;
+        animation-duration: 1s;
+        animation-delay: 200ms;
+        animation-fill-mode: forwards;
+
+        h3 {
+            margin: 0;
+            font-weight: 800;
+        }
+
+        #basicInfo,
+        #settings {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+
+            .infoStat {
+                min-width: calc(25% - 0.5rem);
+            }
+
+            .infoButtons,
+            .settingsButtons {
+                min-width: 100%;
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .setting {
+                min-width: calc(50% - 0.5rem);
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+
+    }
+}
+
+button,
+input {
+    appearance: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    outline: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 1px 1px #eed9f2;
+    transition: box-shadow 200ms, transform 200ms, background-color 200ms;
+    font-weight: 500;
+    background-color: #f0f0f0;
+
+    &[type="text"],
+    &[type="search"] {
+        cursor: text !important;
+    }
+
+    &:hover {
+        background-color: #eed9f2;
+        box-shadow: none;
+        transform: translate(1px, 1px);
+    }
+
+    &::placeholder {
+        color: #0c0c0d;
+    }
+}
+
+#searchForm {
+    display: flex;
+    margin: 1rem 0 0;
+    gap: 0.5rem;
+}
+
+.tableContainer {
+    overflow-y: auto;
+    height: 100%;
+    margin: 1rem 1rem 0;
+    scrollbar-width: thin;
+}
+
+#quoteTable {
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    th {
+        position: sticky;
+        top: 0;
+        background-color: #f1b4cc;
+        padding: 0.5rem 1rem;
+        z-index: 999;
+    }
+
+    tr:has(td) {
+        opacity: 0;
+    }
+
+    td {
+        font-size: 1rem;
+        font-weight: 500;
+        text-align: center;
+        border-bottom: 1px solid #f1b4cc;
+        user-select: text;
+    }
+
+    .fadeIn {
+        animation-name: fadeIn;
+        animation-duration: 500ms;
+        animation-delay: 500ms;
+        animation-fill-mode: forwards;
+    }
+
+    .quoteContent {
+        word-break: break-all;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    #serverIcon {
+        width: 72px !important;
+        height: 72px !important;
+    }
+
+    #serverName {
+        font-size: 26px;
+    }
+
+    #basicInfo,
+    #settings {
+        flex-direction: column;
+
+        button {
+            width: 100%;
+        }
+    }
+}

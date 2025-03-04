@@ -1,24 +1,9 @@
-import { type ClientOptions as DjsClientOptions, Collection, Client as DjsClient, GuildMember, Routes, Team, User } from 'discord.js';
+import { type ClientOptions, Collection, Client as DjsClient, GuildMember, Routes, Team, User } from 'discord.js';
 import { glob } from 'glob';
 import type { Event } from './Event.js';
 import { type Command } from './Command.js';
 import 'dotenv/config';
 import Logger from './logger.js';
-
-export interface ClientOptions extends DjsClientOptions {
-    /**Application Name */
-    name: string;
-    /**
-     * Console Color
-     *
-     * Should follow this format \x1b[38;2;RED;GREEN;BLUEm
-     *
-     * RED, GREEN and BLUE should be 0 - 255
-     */
-    color: string;
-    /** Hex Color for embeds, formatted as 0xHEXCODE */
-    embedColor: number;
-}
 
 export class Client extends DjsClient {
     public cooldowns: Collection<string, Collection<string, number>> = new Collection();
@@ -28,22 +13,17 @@ export class Client extends DjsClient {
     public userContextCommands: Collection<string, Command> = new Collection();
     public messageContextCommands: Collection<string, Command> = new Collection();
 
-    public name = '';
-    public color = '';
     public embedColor = 0x000000;
+    public log;
+    public error;
 
     constructor(options: ClientOptions) {
         super(options);
-        this.name = options.name;
-        this.color = options.color;
-        this.embedColor = options.embedColor;
+        this.embedColor = +process.env.EMBED_COLOR;
+        const logger = new Logger(process.env.APP_NAME, process.env.APP_COLOR);
+        this.log = logger.log;
+        this.error = logger.error;
     }
-
-    public logger = new Logger(this.name, this.color);
-    /**Console logs data with a blue time code */
-    public log = this.logger.log;
-    /**Console logs data with a red time code */
-    public error = this.logger.error;
 
     public async isBotOwner(member: User): Promise<boolean> {
         const application = await this.application?.fetch();
@@ -57,7 +37,10 @@ export class Client extends DjsClient {
     }
 
     public async registerEvents(): Promise<this> {
-        for (const eventPath of (await glob(process.env.EVENTS_PATH, { platform: 'linux' })).toString().replaceAll('dist', '..').split(',')) {
+        for (const eventPath of (await glob(process.env.EVENTS_PATH, { platform: 'linux' }))
+            .toString()
+            .replaceAll(/dist|prod/g, '..')
+            .split(',')) {
             this.log(`Registering event ${eventPath.replace('../events/', '')}`);
             try {
                 const event: Event = (await import(eventPath)).default;
@@ -72,7 +55,10 @@ export class Client extends DjsClient {
     }
     public async registerCommands(servers: Array<string>): Promise<this> {
         const commands: Array<Command['applicationData']> = [];
-        for (const cmdPath of (await glob(process.env.COMMANDS_PATH, { platform: 'linux' })).toString().replaceAll('dist', '..').split(',')) {
+        for (const cmdPath of (await glob(process.env.COMMANDS_PATH, { platform: 'linux' }))
+            .toString()
+            .replaceAll(/dist|prod/g, '..')
+            .split(',')) {
             this.log(`Registering command ${cmdPath.replace('../commands/', '')}`);
             try {
                 const command: Command = (await import(cmdPath)).default as Command;

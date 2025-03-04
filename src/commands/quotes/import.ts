@@ -7,7 +7,7 @@ export default new Command({
     name: 'importquotes',
     description: 'Imports quotes from a mongodb json file.',
     disabled: false,
-    category: 'quotes',
+    category: 'quote',
     deferReply: false,
     dm_permission: false,
     hidden: false,
