@@ -5,7 +5,7 @@ import Fastify from 'fastify';
 import Logger from './classes/logger.js';
 import { init } from './handlers/database_hidden.js';
 
-const version = '0.4.0';
+const version = '0.4.1';
 
 //Bot
 export const client = new Client({
@@ -22,15 +22,6 @@ client.once('ready', async () => {
     if (process.env.NODE_ENV === 'Development') await client.registerCommands(['981639333549322262']);
     fastify.register((await import('./routes/index.js')).default).then(() => startFastify());
     //init();
-
-    // client.guilds.fetch('632717913169854495').then((g) => {
-    //     g.channels.fetch('632717914134413324').then(async (c) => {
-    //         if (!c || !c.isTextBased()) return;
-    //         //1343030660432007179
-    //         console.log(await c.messages.fetch('1338783099986903051'));
-    //         console.log(await c.messages.fetch('1343030660432007179'));
-    //     });
-    // });
 
     client.guilds.fetch().then((guilds) => {
         guilds.map((guild) => {

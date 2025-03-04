@@ -3,6 +3,9 @@ import { client } from '../index.js';
 import { getGuildInfo, getQuote, getQuotes, getUser } from '../handlers/database.js';
 
 async function routes(fastify: FastifyInstance) {
+    fastify.all('/guild/target', async (req, reply) => {
+        reply.send({ id: process.env.TARGET });
+    });
     fastify.all('/guild/:id/quotes', async (req, reply) => {
         const guildId = (req.params as { id: string }).id;
         const query = req.query as { search?: string };

@@ -1,5 +1,6 @@
 window.onload = async () => {
-    const quotes = await (await fetch(`/api/guild/632717913169854495/quotes${window.location.search}`)).json();
+    const target = await (await fetch('/api/guild/target')).json();
+    const quotes = await (await fetch(`/api/guild/${target.id}/quotes${window.location.search}`)).json();
     const quoteError = document.getElementById('quoteError');
     const searchInput = document.getElementById('searchInput');
     searchInput.value = window.location.search.replace('?search=', '');
@@ -24,7 +25,7 @@ window.onload = async () => {
         let user = users.filter((user) => user.id === quote.createdBy)[0];
         if (!user) {
             try {
-                user = await (await fetch(`/api/guild/632717913169854495/user/${quote.createdBy}`)).json();
+                user = await (await fetch(`/api/guild/${target.id}/user/${quote.createdBy}`)).json();
                 users.push(user);
             } catch (error) {
                 users.push({

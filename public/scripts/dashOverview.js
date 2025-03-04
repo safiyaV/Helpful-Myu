@@ -1,6 +1,6 @@
 window.onload = async () => {
-    const host = window.location.hostname;
-    const guild = await (await fetch(host === 'localhost' ? '/api/guild/981639333549322262' : '/api/guild/632717913169854495')).json();
+    const target = await (await fetch('/api/guild/target')).json();
+    const guild = await (await fetch(`/api/guild/${target.id}`)).json();
 
     document.getElementById('serverName').innerHTML = guild.name;
     document.getElementById('serverIcon').setAttribute('src', guild.info.icon || '');
