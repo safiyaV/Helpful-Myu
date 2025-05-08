@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "Helpful-Myu",
+            "script": "npm",
+            "automation": false,
+            "args": "run start-prod"
+        }
+    ]
+}

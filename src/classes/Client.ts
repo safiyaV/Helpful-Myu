@@ -2,7 +2,6 @@ import { type ClientOptions, Collection, Client as DjsClient, GuildMember, Route
 import { glob } from 'glob';
 import type { Event } from './Event.js';
 import { type Command } from './Command.js';
-import 'dotenv/config';
 import Logger from './logger.js';
 
 export class Client extends DjsClient {
@@ -53,7 +52,7 @@ export class Client extends DjsClient {
         this.log('Events Registered.');
         return this;
     }
-    public async registerCommands(servers: Array<string>): Promise<this> {
+    public async registerCommands(servers?: Array<string>): Promise<this> {
         const commands: Array<Command['applicationData']> = [];
         for (const cmdPath of (await glob(process.env.COMMANDS_PATH, { platform: 'linux' }))
             .toString()
@@ -73,6 +72,11 @@ export class Client extends DjsClient {
             } catch (err: Error | unknown) {
                 this.error(cmdPath, err);
             }
+        }
+        if (!servers) {
+            if (!this.user) throw new Error(`ClientUser is invalid \n ${this}`);
+            this.rest.put(Routes.applicationCommands(this.user.id), { body: commands }).catch((err) => this.error(err, 'Global'));
+            return this;
         }
         for (const server of servers) {
             if (!this.user) throw new Error(`ClientUser is invalid \n ${this}`);

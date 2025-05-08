@@ -32,7 +32,7 @@ export default new Event('guildMemberAdd', {
             .fetch(guildInfo.join.messageChannel)
             .then((messageChannel) => {
                 if (messageChannel?.isTextBased()) {
-                    messageChannel.send(client.formatMessage(member, guildInfo.join.message));
+                    messageChannel.send(`${client.formatMessage(member, guildInfo.join.message)} ${guildInfo.join.image ? guildInfo.join.image : ''}`);
                 }
             })
             .catch(() => {});

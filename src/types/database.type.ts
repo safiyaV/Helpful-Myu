@@ -27,20 +27,41 @@ export interface BaseGuild {
         logChannel: string;
         messageChannel: string;
         message: string;
+        image: string;
     };
     leave: {
         logChannel: string;
         messageChannel: string;
         message: string;
+        image: string;
     };
     boost: {
         logChannel: string;
         messageChannel: string;
         message: string;
+        image: string;
     };
     message: {
         editLogChannel: string;
         deleteLogChannel: string;
+    };
+    stats: {
+        messages: {
+            count: number;
+            history: { date: string; count: number }[];
+        };
+        voice: {
+            time: number;
+            history: { date: string; time: number }[];
+        };
+        files: {
+            count: number;
+            history: { date: string; images: number; gifs: number; videos: number; other: number }[];
+        };
+        users: {
+            count: number;
+            history: { date: string; joins: number; leaves: number; total: number }[];
+        };
     };
 }
 
@@ -54,13 +75,6 @@ export interface databaseMessage {
     attachments: Message['attachments'];
 }
 
-export interface OldQuote {
-    id: string;
-    keyword: string;
-    text: string;
-    createdBy: string;
-    createdAt: { $date: string };
-}
 export interface Quote {
     id: string;
     name: string;
@@ -92,3 +106,20 @@ export interface UserProjectionOptions {
 }
 
 export interface UserIncrementable {}
+
+export interface ChannelStats {
+    id: string;
+    type: 'voice' | 'text';
+    messages: {
+        count: number;
+        history: { date: string; count: number }[];
+    };
+    voice: {
+        time: number;
+        history: { date: string; time: number }[];
+    };
+    files: {
+        count: number;
+        history: { date: string; images: number; gifs: number; videos: number; other: number }[];
+    };
+}

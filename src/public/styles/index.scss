@@ -1,27 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     box-sizing: border-box;
 }
 
+:root {
+    --accent-color: #551100;
+    --tets: #F9CDBC;
+    --accent-color-hover: #EE6C49;
+}
+
 html {
-    font-family: "Nunito", serif;
+    font-family: "Noto Sans", sans-serif;
     font-optical-sizing: auto;
-    font-weight: bold;
+    font-weight: normal;
     font-style: normal;
+    font-variation-settings: "wdth" 100;
     margin: 0;
     user-select: none;
+    scrollbar-gutter: stable both-edges;
 
     body {
-        margin: 0;
+        margin: 80px 0 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         background-image: url("/static/assets/GridBG.png");
-        width: calc(max(70vw, min(1440px, 100vw)) - 2rem);
-        margin: auto;
-        padding: 0 2rem 2rem;
     }
 }
 
@@ -37,39 +43,49 @@ html {
 nav {
     display: flex;
     width: 100%;
-    flex-direction: column;
-    align-items: center;
+    height: 80px;
+    background-color: white;
+    padding: 0 40px;
+    margin: 0;
     justify-content: center;
+    position: fixed;
+    top: 0;
+    z-index: 9999;
 
     h1 {
-        margin: 1rem 0 -0.5rem;
-        font-size: 80px;
-        color: #ef78a6;
-        text-shadow: 4px 4px #eed9f2;
+        align-items: center;
+        margin: 0;
+        font-family: "Nunito", serif;
+        font-optical-sizing: auto;
         font-weight: 900;
+        font-style: normal;
+        font-size: 40px;
+        display: flex;
+        -webkit-text-stroke: 8px var(--accent-color);
+        paint-order: stroke fill;
+
     }
 
     >div {
         width: 100%;
-        padding: 0.4rem 0.9rem;
-        background-color: #ef78a6;
-        border-radius: 100px;
+        max-width: 978px;
         display: flex;
+        align-items: center;
         justify-content: space-evenly;
-        box-shadow: 4px 4px #eed9f2;
-        position: relative;
 
         a {
-            color: #fff !important;
-            font-size: 18px;
-            font-weight: 800;
+            height: 100%;
+            text-align: center;
+            align-content: center;
+            color: var(--accent-color) !important;
+            font-size: 20px;
+            font-weight: 900;
             transition:
                 color 200ms,
                 text-shadow 200ms;
             text-decoration: none;
-            text-shadow: 0px 0px #eed9f2;
             flex-grow: 1;
-            text-align: center;
+
             margin: 0 6px;
             min-width: 50px !important;
             max-width: 100px !important;
@@ -77,8 +93,7 @@ nav {
             flex-shrink: 1;
 
             &:hover {
-                color: rgb(246, 236, 248) !important;
-                text-shadow: 1px 1px 1px black;
+                color: var(--accent-color-hover) !important;
             }
         }
 
@@ -87,24 +102,24 @@ nav {
         }
 
         #user {
+            height: 100%;
             pointer-events: visibleStroke;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border-radius: 8px;
-            margin: 0 6px;
-            color: white;
+            color: var(--accent-color);
             font-weight: 800;
+            font-size: 20px;
             transition:
                 color 200ms,
                 text-shadow 200ms;
             min-width: 50px !important;
-            max-width: 200px !important;
+            max-width: 400px !important;
 
             &:hover {
-                color: rgb(246, 236, 248) !important;
-                text-shadow: 1px 1px 1px black;
+                color: var(--accent-color-hover) !important;
             }
 
             #username {
@@ -116,7 +131,6 @@ nav {
 
             #userAvatar {
                 border-radius: 100%;
-                padding: 2px;
             }
 
             #caret {
@@ -161,38 +175,25 @@ nav {
 
 #content {
     width: 100%;
-    height: max(calc(100vh - 16rem), 400px) !important;
-    margin-top: 1rem;
-    border-radius: 25px;
-    background-color: #f1b4cc;
-    overflow: hidden;
     display: flex;
     justify-content: space-evenly;
-    border: #c0c0c0 solid 1.5px;
-    box-shadow: 4px 4px #eed9f2;
+    min-height: calc(100vh - 80px);
 
     main {
-        width: 70%;
-        background-color: #fcf7fd;
-        overflow-y: auto;
-        scrollbar-color: #eed9f2 #c0c0c0;
-        scrollbar-width: thin;
+        width: calc(100vw - 350px);
+        background-color: rgb(255, 255, 255, 0.95);
         margin: 12px;
-        border: 1.5px solid #c0c0c0;
         padding: 6px 12px;
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
     }
 
     aside {
         background-color: #fcf7fd;
-        border-left: #c0c0c0 solid 1.5px;
         margin: 12px 12px 12px 0px;
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-        overflow: hidden;
-        max-width: 30% !important;
-        min-width: 30% !important;
+        max-width: 350px;
+        min-width: 350px;
+        position: sticky;
+        max-height: calc(100vh - 92px - 12px);
+        top: 92px;
     }
 }
 
@@ -207,7 +208,6 @@ nav {
 }
 
 discord-widget {
-    border-radius: 0 !important;
     opacity: 0;
     animation-name: fadeIn;
     animation-duration: 1s;
@@ -219,12 +219,15 @@ discord-widget {
     }
 
     widget-footer {
-        padding: 0px !important;
-
-        widget-button-join {
-            width: 100% !important;
-            border-radius: 0 !important;
-            height: 40px !important;
+        background-color: hsl(0, 0%, 99%) !important;
+        color: #000000 !important;
+        padding: 6px !important;
+        widget-footer-info {
+            text-align: center;
+            align-content: center;
+            justify-content: center;
+            margin-right: 6px;
+            opacity: 0.25 !important;
         }
     }
 }

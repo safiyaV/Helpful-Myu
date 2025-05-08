@@ -34,7 +34,7 @@ export default new Command({
         },
     ],
     aliases: ['qa', 'qadd', 'addquote', 'quoteadd', 'qc', 'qcreate'],
-    async slashCommand({ interaction, options, client }) {
+    async slashCommand({ interaction, options }) {
         if (!interaction.guildId) return;
         const keyword = options
             .getString('keyword', true)
@@ -51,7 +51,7 @@ export default new Command({
         })) as WithId<Quote>;
         interaction.editReply(`Quote \`${quote.id}\` cweated :3`);
     },
-    async prefixCommand({ message, args, client }) {
+    async prefixCommand({ message, args }) {
         if (!message.guildId) return;
         if (!args[0]) return message.reply('Nyu keyword or content provided miyaaaa~!');
         const keyword = args.shift() as string;

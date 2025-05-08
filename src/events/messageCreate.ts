@@ -9,7 +9,7 @@ export default new Event('messageCreate', {
     async fn(message) {
         if (message.author.bot || message.author.system || !message.inGuild()) return;
         if (message.type === 8) boostMessage(message);
-        messageCreate(message.client, message.guildId, message.author.id);
+        messageCreate(message);
         createMessage(message.guildId, {
             id: message.id,
             content: message.content,
@@ -36,7 +36,9 @@ async function boostMessage(message: Message<true>) {
     if (guildInfo.boost.messageChannel) {
         const messageChannel = await guild.channels.fetch(guildInfo.boost.messageChannel);
         if (messageChannel?.isTextBased()) {
-            messageChannel.send(client.formatMessage(await guild.members.fetch(message.author.id), guildInfo.boost.message));
+            messageChannel.send(
+                `${client.formatMessage(await guild.members.fetch(message.author.id), guildInfo.boost.message)} ${guildInfo.boost.image ? guildInfo.boost.image : ''}`
+            );
         }
     }
 }

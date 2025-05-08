@@ -17,7 +17,7 @@ window.onload = async () => {
         const creator = document.createElement('td');
         const created = document.createElement('td');
         const content = document.createElement('td');
-        const manage = document.createElement('td');
+        //const manage = document.createElement('td');
         id.innerText = quote.id;
         id.classList.add('quoteID');
         name.innerText = quote.name;
@@ -40,9 +40,9 @@ window.onload = async () => {
         created.classList.add('quoteCreated');
         content.innerText = quote.content;
         content.classList.add('quoteContent');
-        manage.innerText = quote.deleted;
-        manage.classList.add('quoteManage');
-        row.append(id, name, creator, created, content, manage);
+        // manage.innerText = quote.deleted;
+        // manage.classList.add('quoteManage');
+        row.append(id, name, creator, created, content);
         row.classList.add('fadeIn');
         table.append(row);
     }

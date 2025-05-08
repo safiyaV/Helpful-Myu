@@ -7,7 +7,7 @@ export default new Command({
     disabled: true,
     dm_permission: false,
     options: [],
-    async prefixCommand({ message, args, client }) {
+    async prefixCommand({ message, client }) {
         client
             .registerCommands(['global'])
             .then(() => {

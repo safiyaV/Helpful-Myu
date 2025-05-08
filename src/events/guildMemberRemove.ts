@@ -32,7 +32,7 @@ export default new Event('guildMemberRemove', {
             .fetch(guildInfo.leave.messageChannel)
             .then(async (messageChannel) => {
                 if (messageChannel?.isTextBased()) {
-                    messageChannel.send(client.formatMessage(await member.fetch(true), guildInfo.leave.message));
+                    messageChannel.send(`${client.formatMessage(await member.fetch(true), guildInfo.leave.message)} ${guildInfo.leave.image ? guildInfo.leave.image : ''}`);
                 }
             })
             .catch(() => {});

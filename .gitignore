@@ -6,4 +6,3 @@ node_modules
 package-lock.json
 *.css
 database_hidden.ts
-pm2.prod.json

@@ -1,11 +1,10 @@
 import { ActivityType, Partials } from 'discord.js';
 import { Client } from './classes/Client.js';
-import { createCollection, createUser, getUserCountAll } from './handlers/database.js';
+import { createUser, getUserCountAll } from './handlers/database.js';
 import Fastify from 'fastify';
 import Logger from './classes/logger.js';
-import { init } from './handlers/database_hidden.js';
 
-const version = '0.4.1';
+const version = '0.6.0';
 
 //Bot
 export const client = new Client({
@@ -13,13 +12,17 @@ export const client = new Client({
     partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.User],
 });
 
-const logger = new Logger('Web Server', '212;47;151');
+const webLogger = new Logger('Web Server', '212;47;151');
 const fastify = Fastify({ logger: { level: 'error' }, ignoreTrailingSlash: true });
 
 client.once('ready', async () => {
     client.log(`Online`);
     await client.registerEvents();
-    if (process.env.NODE_ENV === 'Development') await client.registerCommands(['981639333549322262']);
+    if (process.env.NODE_ENV === 'development') {
+        await client.registerCommands(['981639333549322262']);
+    } else {
+        await client.registerCommands(['global']);
+    }
     fastify.register((await import('./routes/index.js')).default).then(() => startFastify());
     //init();
 
@@ -41,15 +44,15 @@ client.once('ready', async () => {
         });
     });
 
-    let count = 0;
+    let activity = 0;
     setInterval(async () => {
         const activities = [
             { name: `Watching ${(await getUserCountAll()) - 2} users`, type: ActivityType.Custom },
             { name: `Version ${version}`, type: ActivityType.Custom },
         ];
-        const selectedActivity = activities[count];
+        const selectedActivity = activities[activity];
         client.user?.setPresence({ activities: [selectedActivity], status: 'online' });
-        activities.length - 1 === count ? (count = 0) : (count = count + 1);
+        activities.length - 1 === activity ? (activity = 0) : (activity = activity + 1);
     }, 30_000);
 });
 
@@ -58,8 +61,8 @@ client.login(process.env.TOKEN);
 async function startFastify() {
     try {
         await fastify.listen({ port: +process.env.WEB_PORT });
-        logger.log(`Port ${process.env.WEB_PORT} open.`);
+        webLogger.log(`Port ${process.env.WEB_PORT} open.`);
     } catch (err) {
-        logger.log(err);
+        webLogger.log(err);
     }
 }
